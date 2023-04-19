@@ -19,6 +19,10 @@ var randomCmd = &cobra.Command{
 	Short: "Get a random dad joke",
 	Long:  `This command fetches a random dad joke from the icanhazdadjoke api`,
 	Run: func(cmd *cobra.Command, args []string) {
+		jokeTerm, _ := cmd.Flags().GetString("term")
+		if jokeTerm != "" {
+			getRandomJokeWithTerm(jokeTerm)
+		}
 		getRandomJoke()
 	},
 }
@@ -31,6 +35,8 @@ func init() {
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// randomCmd.PersistentFlags().String("foo", "", "A help for foo")
+
+	randomCmd.PersistentFlags().String("terms", "", "To get a random dad joke using a term.")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
@@ -52,6 +58,10 @@ func getRandomJoke() {
 		fmt.Printf("Could not unmarshall responseBytes %v", err)
 	}
 	fmt.Println(string(joke.Joke))
+}
+
+func getRandomJokeWithTerm(jokeTerm string) {
+	fmt.Printf("You search a dad joke with term: %v", jokeTerm)
 }
 
 func getJokeData(baseAPI string) []byte {
