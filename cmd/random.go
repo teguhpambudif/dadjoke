@@ -22,8 +22,9 @@ var randomCmd = &cobra.Command{
 		jokeTerm, _ := cmd.Flags().GetString("term")
 		if jokeTerm != "" {
 			getRandomJokeWithTerm(jokeTerm)
+		} else {
+			getRandomJoke()
 		}
-		getRandomJoke()
 	},
 }
 
@@ -36,7 +37,7 @@ func init() {
 	// and all subcommands, e.g.:
 	// randomCmd.PersistentFlags().String("foo", "", "A help for foo")
 
-	randomCmd.PersistentFlags().String("terms", "", "To get a random dad joke using a term.")
+	randomCmd.PersistentFlags().String("term", "", "To get a random dad joke using a term.")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
@@ -56,8 +57,9 @@ func getRandomJoke() {
 
 	if err := json.Unmarshal(responseBytes, &joke); err != nil {
 		fmt.Printf("Could not unmarshall responseBytes %v", err)
+	} else {
+		fmt.Println(string(joke.Joke))
 	}
-	fmt.Println(string(joke.Joke))
 }
 
 func getRandomJokeWithTerm(jokeTerm string) {
