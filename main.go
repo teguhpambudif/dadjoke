@@ -1,6 +1,5 @@
 /*
-Copyright © 2023 NAME HERE <EMAIL ADDRESS>
-
+Copyright © 2023 TEGUH PABUDI <TEGUHPAMBUDI1251@GMAIL.COM>
 */
 package main
 
