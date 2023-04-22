@@ -10,6 +10,9 @@ import (
 	"log"
 	"net/http"
 
+	// "math/rand"
+	// "time"
+
 	"github.com/spf13/cobra"
 )
 
@@ -105,10 +108,10 @@ func getJokeDataWithTerm(jokeTerm string) (totalJokes int, jokeList []Joke) {
 	url := fmt.Sprintf("https://icanhazdadjoke.com/search?term=%s", jokeTerm)
 	responseBytes := getJokeData(url)
 	// fmt.Println(responseBytes)
-	JokeListRaw := SearchResult{}
+	jokeListRaw := SearchResult{}
 	// fmt.Println(JokeListRaw)
 
-	if err := json.Unmarshal(responseBytes, &JokeListRaw); err != nil {
+	if err := json.Unmarshal(responseBytes, &jokeListRaw); err != nil {
 		log.Printf("Could not unmarshal reponseBytes. %v", err)
 	}
 
@@ -116,11 +119,14 @@ func getJokeDataWithTerm(jokeTerm string) (totalJokes int, jokeList []Joke) {
 	// if jokeListRaw.Result == nil {
 	// 	jokeListRaw.Result = []byte("[]")
 	// }
-	if err := json.Unmarshal(JokeListRaw.Results, &jokes); err != nil {
+	if err := json.Unmarshal(jokeListRaw.Results, &jokes); err != nil {
 		log.Printf("Could not unmarshal reponseBytes. %v", err)
 	}
 	// fmt.Println(jokes)
 
-	return JokeListRaw.TotalJokes, jokes
-
+	return jokeListRaw.TotalJokes, jokes
 }
+
+// func randomiseJokeList(length int,jokeList []Joke){
+
+// }
