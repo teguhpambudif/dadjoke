@@ -6,7 +6,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 
@@ -50,8 +50,8 @@ type Joke struct {
 	Status int    `json:"status"`
 }
 
-type SerachResult struct {
-	Result     json.RawMessage `json:"result"`
+type SearchResult struct {
+	Results    json.RawMessage `json:"results"`
 	SearchTerm string          `json:"search_term"`
 	Status     int             `json:"status"`
 	TotalJokes int             `json:"total_jokes"`
@@ -70,7 +70,8 @@ func getRandomJoke() {
 }
 
 func getRandomJokeWithTerm(jokeTerm string) {
-	fmt.Printf("You search a dad joke with term: %v", jokeTerm)
+	_, results := getJokeDataWithTerm(jokeTerm)
+	fmt.Println(results)
 }
 
 func getJokeData(baseAPI string) []byte {
@@ -92,10 +93,34 @@ func getJokeData(baseAPI string) []byte {
 		log.Printf("Could not make request. %v", err)
 	}
 
-	responseBytes, err := ioutil.ReadAll(response.Body)
+	responseBytes, err := io.ReadAll(response.Body)
 	if err != nil {
 		log.Printf("Could not read response body. %v", err)
 	}
 
 	return responseBytes
+}
+
+func getJokeDataWithTerm(jokeTerm string) (totalJokes int, jokeList []Joke) {
+	url := fmt.Sprintf("https://icanhazdadjoke.com/search?term=%s", jokeTerm)
+	responseBytes := getJokeData(url)
+	// fmt.Println(responseBytes)
+	JokeListRaw := SearchResult{}
+	// fmt.Println(JokeListRaw)
+
+	if err := json.Unmarshal(responseBytes, &JokeListRaw); err != nil {
+		log.Printf("Could not unmarshal reponseBytes. %v", err)
+	}
+
+	jokes := []Joke{}
+	// if jokeListRaw.Result == nil {
+	// 	jokeListRaw.Result = []byte("[]")
+	// }
+	if err := json.Unmarshal(JokeListRaw.Results, &jokes); err != nil {
+		log.Printf("Could not unmarshal reponseBytes. %v", err)
+	}
+	// fmt.Println(jokes)
+
+	return JokeListRaw.TotalJokes, jokes
+
 }
